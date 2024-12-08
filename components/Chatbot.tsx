@@ -5,6 +5,7 @@ import { Input } from "./ui/input";
 import { Select, SelectTrigger, SelectContent, SelectItem } from "./ui/select";
 import axios from "axios";
 import { ClipLoader } from "react-spinners";
+import { authToken, createMeeting } from '@/actions/videosdk';
 
 const Chatbot = () => {
   const [messages, setMessages] = useState<string[]>([]);
@@ -82,8 +83,12 @@ const Chatbot = () => {
   const handleScheduleInterview = async () => {
     setLoading(true);
     try {
+
+            // Create a meeting and get the meetingId
+      const meetingId = await createMeeting({ token: authToken })
+
       await handleSendMessage(`give a message that  interview has been scheduled successfully! and thank ${participant} for Scheduling an interview with the following details: 
-          Title: ${title}, Job Type: ${jobType}, Date: ${date}, Time Slot: ${timeSlot}, Participant: ${participant}`);
+          Title: ${title}, Job Type: ${jobType}, Date: ${date}, Time Slot: ${timeSlot}, Participant: ${participant}, Meeting Id: ${meetingId}`);
 
       // Confirm scheduling
       await axios.post("/api/meetings", {
@@ -92,6 +97,7 @@ const Chatbot = () => {
         date,
         timeSlot,
         participant,
+        meetingId
       });
 
       setMessages((prev) => [
@@ -109,7 +115,7 @@ const Chatbot = () => {
   };
 
   return (
-    <div className="flex flex-col space-y-4 p-4  mx-auto h-full bg-white rounded-lg shadow-lg">
+    <div className="flex flex-col space-y-4 p-4 text-black mx-auto h-full bg-white rounded-lg shadow-lg">
               <h1 className="text-2xl font-bold text-center mb-6">AI Chatbot for Scheduling Interviews</h1>
 
       <div className="space-y-2 overflow-y-auto">
