@@ -1,31 +1,48 @@
-/* eslint-disable no-console */
 'use client';
 import { useMeeting } from '@videosdk.live/react-sdk';
+import { Mic, Video, MicOff, VideoOff, PhoneOff  } from 'lucide-react';
 
 export function Controls() {
-  const { leave, toggleMic, toggleWebcam } = useMeeting({
-    onError: (error) => console.error('Meeting Error:', error)
+  const { leave, toggleMic, toggleWebcam, localParticipant } = useMeeting({
+    onError: (error) => console.error('Meeting Error:', error),
   });
 
+  // Get mic and webcam state from the local participant
+  const micOn = localParticipant?.micOn;
+  const webcamOn = localParticipant?.webcamOn;
+
   return (
-    <div className="flex justify-center space-x-4 mt-6">
+    <div className="flex justify-center space-x-6 mt-6">
+      {/* Leave Button */}
       <button
         onClick={() => leave()}
-        className="px-6 py-3 bg-red-600 text-white rounded-lg shadow-lg"
+        className="p-4 rounded-full bg-red-600 text-white shadow-lg transition hover:bg-red-700"
       >
-        Leave
+        <PhoneOff size={24} />
       </button>
+
+      {/* Mic Toggle Button */}
       <button
         onClick={() => toggleMic()}
-        className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-lg"
+        className="p-4 bg-blue-600 text-white rounded-full shadow-lg flex items-center justify-center"
       >
-        Toggle Mic
+        {micOn ? (
+          <Mic className="text-white" />
+        ) : (
+          <MicOff className="text-white" />
+        )}
       </button>
+
+      {/* Webcam Toggle Button */}
       <button
         onClick={() => toggleWebcam()}
-        className="px-6 py-3 bg-green-600 text-white rounded-lg shadow-lg"
+        className="p-4 bg-green-600 text-white rounded-full shadow-lg flex items-center justify-center"
       >
-        Toggle Webcam
+        {webcamOn ? (
+          <Video className="text-white" />
+        ) : (
+          <VideoOff className="text-white" />
+        )}
       </button>
     </div>
   );

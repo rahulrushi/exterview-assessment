@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useMeeting } from '@videosdk.live/react-sdk';
 import { Controls } from './Controls';
 import { ParticipantView } from './ParticipantView';
+import { Loader, Users } from 'lucide-react';
 
 type MeetingViewProps = {
   onMeetingLeave: () => void;
@@ -32,16 +33,15 @@ export function MeetingView({ onMeetingLeave, meetingId }: MeetingViewProps) {
     join();
   };
 
-
   return (
     <div className="container mx-auto min-h-screen bg-gray-100 px-4 py-6">
       <h3 className="mb-6 text-center text-2xl font-semibold text-indigo-600">
-        Meeting Id: {meetingId}
+        <Users className="inline mr-2" /> Meeting Id: {meetingId}
       </h3>
 
       {joined === 'JOINED' ? (
         <div>
-          <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {[...participants.keys()].map((participantId) => (
               <ParticipantView participantId={participantId} key={participantId} />
             ))}
@@ -49,12 +49,15 @@ export function MeetingView({ onMeetingLeave, meetingId }: MeetingViewProps) {
           <Controls />
         </div>
       ) : joined === 'JOINING' ? (
-        <p className="text-center text-lg">Joining the meeting...</p>
+        <div className="flex justify-center items-center space-x-2">
+          <Loader className="animate-spin text-indigo-600" size={24} />
+          <p className="text-center text-lg">Joining the meeting...</p>
+        </div>
       ) : (
         <div className="mt-6 flex justify-center">
           <button
             onClick={joinMeeting}
-            className="rounded-lg bg-indigo-600 px-6 py-3 text-white shadow-lg transition"
+            className="rounded-lg bg-indigo-600 px-6 py-3 text-white shadow-lg transition hover:bg-indigo-700"
           >
             Join Now
           </button>
