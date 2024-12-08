@@ -1,10 +1,10 @@
 {
-  "name": "nextshcdndashboardstarter",
+  "name": "Rahul Hrushikesh Exterview Assessment",
   "version": "1.0.0",
   "private": true,
   "author": {
-    "name": "Kiran",
-    "url": "https://github.com/Kiranism"
+    "name": "Rahul Hrushikesh",
+    "url": "https://github.com/rahulrushi"
   },
   "scripts": {
     "dev": "next dev --turbo",
