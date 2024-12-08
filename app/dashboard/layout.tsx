@@ -25,7 +25,10 @@ export default function DashboardLayout({
         <SidebarInset>
           <Header />
           {/* page main content */}
+          <div className='p-6'>
+
           {children}
+          </div>
           {/* page main content ends */}
         </SidebarInset>
       </SidebarProvider>

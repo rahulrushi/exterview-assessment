@@ -99,17 +99,17 @@ export default function AppSidebar() {
                         <SidebarMenuSub>
                           {item.items.map((subItem) => (
                             <SidebarMenuSubItem key={subItem.title}>
-                              <SidebarMenuSubButton
-                                asChild
-                                isActive={pathname === subItem.url}
-                              >
-                                <div className='flex'>
+                              <Link href={subItem.url}>
+                                <SidebarMenuSubButton
+                                  asChild
+                                  isActive={pathname === subItem.url}
+                                >
+                                  {/* <div className='flex'> */}
                                   {/* {subItem.icon && <Icon />} */}
-                                  <Link href={subItem.url}>
-                                    <span>{subItem.title}</span>
-                                  </Link>
-                                </div>
-                              </SidebarMenuSubButton>
+                                  <span>{subItem.title}</span>
+                                  {/* </div> */}
+                                </SidebarMenuSubButton>
+                              </Link>
                             </SidebarMenuSubItem>
                           ))}
                         </SidebarMenuSub>
