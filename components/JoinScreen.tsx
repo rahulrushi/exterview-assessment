@@ -12,7 +12,6 @@ export function JoinScreen({
   const [name, setName] = useState<string>("");
 
   useEffect(() => {
-    // Redirect if meeting details are already set
     if (meetingId && participantName) {
       getMeetingAndToken(meetingId, participantName);
     }
@@ -25,30 +24,42 @@ export function JoinScreen({
   const isButtonDisabled = !name.trim();
 
   return (
-    <div>
-      <input
-        type="text"
-        placeholder="Enter Your Name"
-        onChange={(e) => {
-          setName(e.target.value);
-        }}
-        value={name}
-      />
-      <input
-        type="text"
-        placeholder="Enter Meeting Id"
-        onChange={(e) => {
-          setLocalMeetingId(e.target.value);
-        }}
-        value={localMeetingId}
-      />
-      <button onClick={onClick} disabled={isButtonDisabled}>
-        Join
-      </button>
-      {" or "}
-      <button onClick={onClick} disabled={isButtonDisabled}>
-        Create Meeting
-      </button>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-6">
+      <div className="w-full max-w-sm space-y-6">
+        <h2 className="text-3xl font-semibold text-center text-indigo-600">Join or Create Meeting</h2>
+        <div className="space-y-4">
+          <input
+            type="text"
+            placeholder="Enter Your Name"
+            className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500"
+            onChange={(e) => setName(e.target.value)}
+            value={name}
+          />
+          <input
+            type="text"
+            placeholder="Enter Meeting Id"
+            className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500"
+            onChange={(e) => setLocalMeetingId(e.target.value)}
+            value={localMeetingId}
+          />
+        </div>
+        <div className="flex justify-between">
+          <button
+            onClick={onClick}
+            disabled={isButtonDisabled}
+            className="w-48 p-3 bg-indigo-600 text-white rounded-lg disabled:bg-gray-400 transition"
+          >
+            Join Meeting
+          </button>
+          <button
+            onClick={onClick}
+            disabled={isButtonDisabled}
+            className="w-48 p-3 bg-green-600 text-white rounded-lg disabled:bg-gray-400 transition"
+          >
+            Create Meeting
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

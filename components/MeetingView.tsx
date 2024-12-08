@@ -21,28 +21,40 @@ export function MeetingView({
       onMeetingLeave();
     }
   });
+
   const joinMeeting = () => {
     setJoined('JOINING');
     join();
   };
 
   return (
-    <div className="container">
-      <h3>Meeting Id: {meetingId}</h3>
+    <div className="container mx-auto px-4 py-6 bg-gray-100 min-h-screen">
+      <h3 className="text-2xl font-semibold text-center text-indigo-600 mb-6">
+        Meeting Id: {meetingId}
+      </h3>
       {joined && joined === 'JOINED' ? (
         <div>
           <Controls />
-          {[...participants.keys()].map((participantId) => (
-            <ParticipantView
-              participantId={participantId}
-              key={participantId}
-            />
-          ))}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+            {[...participants.keys()].map((participantId) => (
+              <ParticipantView
+                participantId={participantId}
+                key={participantId}
+              />
+            ))}
+          </div>
         </div>
       ) : joined && joined === 'JOINING' ? (
-        <p>Joining the meeting...</p>
+        <p className="text-center text-lg">Joining the meeting...</p>
       ) : (
-        <button onClick={joinMeeting}>Join</button>
+        <div className="flex justify-center mt-6">
+          <button
+            onClick={joinMeeting}
+            className="px-6 py-3 bg-indigo-600 text-white rounded-lg shadow-lg transition"
+          >
+            Join Now
+          </button>
+        </div>
       )}
     </div>
   );

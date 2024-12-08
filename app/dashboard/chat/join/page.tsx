@@ -22,7 +22,6 @@ const JoinMeetingPage = () => {
 
   useEffect(() => {
     if (authToken && meetingId && participantName) {
-      // Redirect to Meeting View if meeting details are in the state
       setMeetingDetails(meetingId, participantName);
     }
   }, [meetingId, participantName, setMeetingDetails]);
@@ -34,7 +33,7 @@ const JoinMeetingPage = () => {
         micEnabled: true,
         webcamEnabled: true,
         name: participantName,
-        debugMode: false, // Set to `true` to enable debugging features
+        debugMode: false,
       }}
       token={authToken}
     >
