@@ -131,48 +131,54 @@ export const navItems: NavItem[] = [
     items: [] // Empty array as there are no child items for Dashboard
   },
   {
-    title: 'Employee',
-    url: '/dashboard/employee',
-    icon: 'user',
-    shortcut: ['e', 'e'],
-    isActive: false,
-    items: [] // No child items
-  },
-  {
-    title: 'Product',
-    url: '/dashboard/product',
-    icon: 'product',
-    shortcut: ['p', 'p'],
-    isActive: false,
-    items: [] // No child items
-  },
-  {
-    title: 'Account',
+    title: 'Code Compiler',
     url: '#', // Placeholder as there is no direct link for the parent
-    icon: 'billing',
+    icon: 'SquareTerminal',
     isActive: true,
 
     items: [
       {
-        title: 'Profile',
-        url: '/dashboard/profile',
-        icon: 'userPen',
+        title: 'New Code',
+        url: '/dashboard/compiler/new',
+        icon: 'SquareTerminal',
         shortcut: ['m', 'm']
       },
       {
-        title: 'Login',
+        title: 'Projects',
         shortcut: ['l', 'l'],
-        url: '/',
-        icon: 'login'
+        url: '/dashboard/compiler/projects',
+        icon: 'FolderGit'
       }
     ]
   },
   {
-    title: 'Kanban',
-    url: '/dashboard/kanban',
-    icon: 'kanban',
-    shortcut: ['k', 'k'],
+  
+    title: 'Video Chat',
+    url: '#', // Placeholder as there is no direct link for the parent
+    icon: 'calendarPlus',
+    isActive: true,
+
+    items: [
+      {
+        title: 'Join Meeting',
+        url: '/dashboard/chat/join',
+        icon: 'calendarPlus',
+        shortcut: ['m', 'm']
+      },
+      {
+        title: 'Scheduled Meetings',
+        shortcut: ['l', 'l'],
+        url: '/dashboard/chat/schedule',
+        icon: 'calendarDays'
+      }
+    ]
+  },
+  {
+    title: 'AI Chat Bot',
+    url: '/dashboard/chatbot/chat',
+    icon: 'Bot',
+    shortcut: ['p', 'p'],
     isActive: false,
     items: [] // No child items
-  }
+  },
 ];

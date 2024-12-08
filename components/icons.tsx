@@ -30,12 +30,17 @@ import {
   UserCircle2Icon,
   UserPen,
   UserX2Icon,
-  X
+  X,CalendarDays,Bot,CalendarPlus, SquareTerminal, FolderGit
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
 
 export const Icons = {
+  calendarDays: CalendarDays,
+  Bot: Bot,
+  calendarPlus: CalendarPlus,
+  SquareTerminal: SquareTerminal,
+  FolderGit: FolderGit,
   dashboard: LayoutDashboardIcon,
   logo: Command,
   login: LogIn,
