@@ -28,14 +28,13 @@ export function MeetingView({
   };
 
   return (
-    <div className="container mx-auto px-4 py-6 bg-gray-100 min-h-screen">
-      <h3 className="text-2xl font-semibold text-center text-indigo-600 mb-6">
+    <div className="container mx-auto min-h-screen bg-gray-100 px-4 py-6">
+      <h3 className="mb-6 text-center text-2xl font-semibold text-indigo-600">
         Meeting Id: {meetingId}
       </h3>
       {joined && joined === 'JOINED' ? (
         <div>
-          <Controls />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+          <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[...participants.keys()].map((participantId) => (
               <ParticipantView
                 participantId={participantId}
@@ -43,14 +42,15 @@ export function MeetingView({
               />
             ))}
           </div>
+          <Controls />
         </div>
       ) : joined && joined === 'JOINING' ? (
         <p className="text-center text-lg">Joining the meeting...</p>
       ) : (
-        <div className="flex justify-center mt-6">
+        <div className="mt-6 flex justify-center">
           <button
             onClick={joinMeeting}
-            className="px-6 py-3 bg-indigo-600 text-white rounded-lg shadow-lg transition"
+            className="rounded-lg bg-indigo-600 px-6 py-3 text-white shadow-lg transition"
           >
             Join Now
           </button>
