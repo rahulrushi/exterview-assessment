@@ -1,6 +1,18 @@
 "use client";
-import React, { useEffect } from "react";
-import { MeetingProvider, MeetingConsumer } from "@videosdk.live/react-sdk";
+
+import React, { useEffect, useState } from "react";
+import dynamic from "next/dynamic"; // For dynamic import
+
+// Dynamically import MeetingProvider and MeetingConsumer to disable SSR
+const MeetingProvider = dynamic(
+  () => import("@videosdk.live/react-sdk").then((mod) => mod.MeetingProvider),
+  { ssr: false }
+);
+const MeetingConsumer = dynamic(
+  () => import("@videosdk.live/react-sdk").then((mod) => mod.MeetingConsumer),
+  { ssr: false }
+);
+
 import { authToken, createMeeting } from "@/actions/videosdk";
 import { MeetingView } from "@/components/MeetingView";
 import { JoinScreen } from "@/components/JoinScreen";
@@ -9,6 +21,13 @@ import useMeetingStore from "@/lib/meetingStore";
 const JoinMeetingPage = () => {
   const { meetingId, participantName, setMeetingDetails, clearMeetingDetails } =
     useMeetingStore();
+  
+  const [isClientSide, setIsClientSide] = useState(false);
+
+  // To ensure the component only runs on the client-side
+  useEffect(() => {
+    setIsClientSide(true);
+  }, []);
 
   const getMeetingAndToken = async (id?: string, name?: string) => {
     const newMeetingId =
@@ -25,6 +44,11 @@ const JoinMeetingPage = () => {
       setMeetingDetails(meetingId, participantName);
     }
   }, [meetingId, participantName, setMeetingDetails]);
+
+  // Ensure the page is only rendered on the client-side
+  if (!isClientSide) {
+    return null; // Prevent server-side rendering issues
+  }
 
   return authToken && meetingId && participantName ? (
     <MeetingProvider
