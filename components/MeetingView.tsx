@@ -32,10 +32,6 @@ export function MeetingView({ onMeetingLeave, meetingId }: MeetingViewProps) {
     join();
   };
 
-  const leaveMeeting = () => {
-    setJoined(null);
-    leave();
-  };
 
   return (
     <div className="container mx-auto min-h-screen bg-gray-100 px-4 py-6">
@@ -51,14 +47,6 @@ export function MeetingView({ onMeetingLeave, meetingId }: MeetingViewProps) {
             ))}
           </div>
           <Controls />
-          <div className="mt-6 flex justify-center">
-            <button
-              onClick={leaveMeeting}
-              className="rounded-lg bg-red-600 px-6 py-3 text-white shadow-lg transition"
-            >
-              Leave Meeting
-            </button>
-          </div>
         </div>
       ) : joined === 'JOINING' ? (
         <p className="text-center text-lg">Joining the meeting...</p>
