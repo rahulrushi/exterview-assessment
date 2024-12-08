@@ -1,27 +1,27 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import dynamic from "next/dynamic"; // For dynamic import
+import React, { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic'; // For dynamic import
 
-// Dynamically import MeetingProvider and MeetingConsumer to disable SSR
+// Dynamically import MeetingProvider, MeetingConsumer, and MeetingView to disable SSR
 const MeetingProvider = dynamic(
-  () => import("@videosdk.live/react-sdk").then((mod) => mod.MeetingProvider),
+  () => import('@videosdk.live/react-sdk').then((mod) => mod.MeetingProvider),
   { ssr: false }
 );
 const MeetingConsumer = dynamic(
-  () => import("@videosdk.live/react-sdk").then((mod) => mod.MeetingConsumer),
+  () => import('@videosdk.live/react-sdk').then((mod) => mod.MeetingConsumer),
   { ssr: false }
 );
+const MeetingView = dynamic(() => import('@/components/MeetingView').then((mod) => mod.MeetingView), { ssr: false });
 
-import { authToken, createMeeting } from "@/actions/videosdk";
-import { MeetingView } from "@/components/MeetingView";
-import { JoinScreen } from "@/components/JoinScreen";
-import useMeetingStore from "@/lib/meetingStore";
+import { authToken, createMeeting } from '@/actions/videosdk';
+import { JoinScreen } from '@/components/JoinScreen';
+import useMeetingStore from '@/lib/meetingStore';
 
 const JoinMeetingPage = () => {
   const { meetingId, participantName, setMeetingDetails, clearMeetingDetails } =
     useMeetingStore();
-  
+
   const [isClientSide, setIsClientSide] = useState(false);
 
   // To ensure the component only runs on the client-side
@@ -32,7 +32,7 @@ const JoinMeetingPage = () => {
   const getMeetingAndToken = async (id?: string, name?: string) => {
     const newMeetingId =
       id == null ? await createMeeting({ token: authToken }) : id;
-    setMeetingDetails(newMeetingId, name || "Anonymous");
+    setMeetingDetails(newMeetingId, name || 'Anonymous');
   };
 
   const onMeetingLeave = () => {
