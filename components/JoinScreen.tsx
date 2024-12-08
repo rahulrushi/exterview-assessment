@@ -1,16 +1,25 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useMeetingStore from "@/lib/meetingStore";
 
 export function JoinScreen({
   getMeetingAndToken,
 }: {
   getMeetingAndToken: (meeting?: string, name?: string) => void;
 }) {
-  const [meetingId, setMeetingId] = useState<string | undefined>();
+  const { meetingId, participantName } = useMeetingStore();
+  const [localMeetingId, setLocalMeetingId] = useState<string | undefined>();
   const [name, setName] = useState<string>("");
 
+  useEffect(() => {
+    // Redirect if meeting details are already set
+    if (meetingId && participantName) {
+      getMeetingAndToken(meetingId, participantName);
+    }
+  }, [meetingId, participantName, getMeetingAndToken]);
+
   const onClick = async () => {
-    getMeetingAndToken(meetingId, name);
+    getMeetingAndToken(localMeetingId, name);
   };
 
   const isButtonDisabled = !name.trim();
@@ -29,9 +38,9 @@ export function JoinScreen({
         type="text"
         placeholder="Enter Meeting Id"
         onChange={(e) => {
-          setMeetingId(e.target.value);
+          setLocalMeetingId(e.target.value);
         }}
-        value={meetingId}
+        value={localMeetingId}
       />
       <button onClick={onClick} disabled={isButtonDisabled}>
         Join
