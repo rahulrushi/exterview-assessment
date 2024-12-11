@@ -1,6 +1,7 @@
 import { createYoga } from 'graphql-yoga';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { PrismaClient } from '@prisma/client';
+import { NextRequest } from 'next/server'; // Import NextRequest
 
 const prisma = new PrismaClient();
 
@@ -58,7 +59,7 @@ const schema = makeExecutableSchema({
 // Set up Yoga server with the schema
 const yoga = createYoga({
   schema,
-  context: ({ request }) => ({ request }),
+  context: ({ request }: { request: NextRequest }) => ({ request }), // Ensure request is of type NextRequest
   cors: {
     origin: '*', // Allow requests from all origins, modify as needed
     methods: ['GET', 'POST']
