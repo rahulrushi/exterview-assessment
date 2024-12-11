@@ -1,11 +1,10 @@
 import { createYoga } from 'graphql-yoga';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { PrismaClient } from '@prisma/client';
-import { NextRequest } from 'next/server'; // Import NextRequest
+import { NextRequest, NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
-// Define your GraphQL schema using type definitions and resolvers
 const typeDefs = `
   type Meeting {
     id: ID!
@@ -50,21 +49,27 @@ const resolvers = {
   }
 };
 
-// Create the executable schema
 const schema = makeExecutableSchema({
   typeDefs,
   resolvers
 });
 
-// Set up Yoga server with the schema
 const yoga = createYoga({
   schema,
-  context: ({ request }: { request: NextRequest }) => ({ request }), // Ensure request is of type NextRequest
+  context: ({ request }: { request: NextRequest }) => ({ request }),
   cors: {
-    origin: '*', // Allow requests from all origins, modify as needed
+    origin: '*',
     methods: ['GET', 'POST']
   }
 });
 
-// Export the handler for Next.js
-export { yoga as GET, yoga as POST };
+// Correctly export GET and POST handlers with both request and context
+export async function GET(request: NextRequest) {
+  const ctx = { request }; // Define context object
+  return yoga.handleRequest(request, ctx); // Pass both request and context
+}
+
+export async function POST(request: NextRequest) {
+  const ctx = { request }; // Define context object
+  return yoga.handleRequest(request, ctx); // Pass both request and context
+}
