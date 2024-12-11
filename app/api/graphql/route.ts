@@ -1,28 +1,69 @@
-import { ApolloServer } from 'apollo-server-micro';
-import { typeDefs } from '@/graphql/schema';
-import { resolvers } from '@/graphql/resolvers';
-import Cors from 'micro-cors';
+import { createYoga } from 'graphql-yoga';
+import { makeExecutableSchema } from '@graphql-tools/schema';
+import { PrismaClient } from '@prisma/client';
 
-const cors = Cors();
+const prisma = new PrismaClient();
 
-const apolloServer = new ApolloServer({ typeDefs, resolvers });
-
-const startServer = apolloServer.start();
-
-export default cors(async function handler(req, res) {
-  if (req.method === 'OPTIONS') {
-    res.end();
-    return false;
+// Define your GraphQL schema using type definitions and resolvers
+const typeDefs = `
+  type Meeting {
+    id: ID!
+    title: String!
+    jobType: String!
+    date: String!
+    timeSlot: String!
+    participant: String!
+    meetingId: String
+    createdAt: String!
   }
-  await startServer;
 
-  await apolloServer.createHandler({
-    path: '/api/graphql'
-  })(req, res);
-});
+  type Query {
+    meetings: [Meeting!]!
+    meeting(id: ID!): Meeting
+  }
 
-export const config = {
-  api: {
-    bodyParser: false
+  type Mutation {
+    createMeeting(
+      title: String!
+      jobType: String!
+      date: String!
+      timeSlot: String!
+      participant: String!
+      meetingId: String
+    ): Meeting!
+    deleteMeeting(id: ID!): Meeting
+  }
+`;
+
+const resolvers = {
+  Query: {
+    meetings: async () => prisma.meeting.findMany(),
+    meeting: async (_: unknown, { id }: { id: string }) =>
+      prisma.meeting.findUnique({ where: { id } })
+  },
+  Mutation: {
+    createMeeting: async (_: unknown, args: any) =>
+      prisma.meeting.create({ data: args }),
+    deleteMeeting: async (_: unknown, { id }: { id: string }) =>
+      prisma.meeting.delete({ where: { id } })
   }
 };
+
+// Create the executable schema
+const schema = makeExecutableSchema({
+  typeDefs,
+  resolvers
+});
+
+// Set up Yoga server with the schema
+const yoga = createYoga({
+  schema,
+  context: ({ request }) => ({ request }),
+  cors: {
+    origin: '*', // Allow requests from all origins, modify as needed
+    methods: ['GET', 'POST']
+  }
+});
+
+// Export the handler for Next.js
+export { yoga as GET, yoga as POST };
