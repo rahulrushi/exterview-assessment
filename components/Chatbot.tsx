@@ -7,6 +7,38 @@ import axios from 'axios';
 import { ClipLoader } from 'react-spinners';
 import { authToken, createMeeting } from '@/actions/videosdk';
 import { Calendar } from '@/components/ui/calendar';
+import { GraphQLClient } from 'graphql-request';
+
+const graphqlEndpoint = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+
+const graphqlClient = new GraphQLClient(`${graphqlEndpoint}/api/graphql`);
+
+const CREATE_MEETING_MUTATION = `
+  mutation CreateMeeting(
+    $title: String!
+    $jobType: String!
+    $date: String!
+    $timeSlot: String!
+    $participant: String!
+    $meetingId: String!
+  ) {
+    createMeeting(
+      title: $title
+      jobType: $jobType
+      date: $date
+      timeSlot: $timeSlot
+      participant: $participant
+      meetingId: $meetingId
+    ) {
+      id
+      title
+      jobType
+      date
+      timeSlot
+      participant
+    }
+  }
+`;
 
 const Chatbot = () => {
   const [messages, setMessages] = useState<string[]>([]);
@@ -16,7 +48,7 @@ const Chatbot = () => {
   const [input, setInput] = useState('');
   const [title, setTitle] = useState('');
   const [jobType, setJobType] = useState('');
-  const [date, setDate] = useState<Date | undefined>(new Date())
+  const [date, setDate] = useState<Date | undefined>(new Date());
   const [timeSlot, setTimeSlot] = useState('');
   const [participant, setParticipant] = useState('');
 
@@ -80,25 +112,59 @@ const Chatbot = () => {
     setLoading(false);
   };
 
+  // const handleScheduleInterview = async () => {
+  //   setLoading(true);
+  //   try {
+  //     // Create a meeting and get the meetingId
+  //     const meetingId = await createMeeting({ token: authToken });
+
+  //     await handleSendMessage(`give a message that  interview has been scheduled successfully! and thank ${participant} for Scheduling an interview with the following details:
+  //         Title: ${title}, Job Type: ${jobType}, Date: ${date}, Time Slot: ${timeSlot}, Participant: ${participant}, Meeting Id: ${meetingId}`);
+
+  //     // Confirm scheduling
+  //     await axios.post('/api/meetings', {
+  //       title,
+  //       jobType,
+  //       date,
+  //       timeSlot,
+  //       participant,
+  //       meetingId
+  //     });
+
+  //     setMessages((prev) => [
+  //       ...prev,
+  //       'Bot: Your interview has been scheduled successfully!'
+  //     ]);
+  //     setStep(step + 1);
+  //   } catch (error) {
+  //     setMessages((prev) => [
+  //       ...prev,
+  //       'Bot: Sorry, something went wrong while scheduling the interview.'
+  //     ]);
+  //   }
+  //   setLoading(false);
+  // };
+
   const handleScheduleInterview = async () => {
     setLoading(true);
     try {
-      // Create a meeting and get the meetingId
       const meetingId = await createMeeting({ token: authToken });
 
-      await handleSendMessage(`give a message that  interview has been scheduled successfully! and thank ${participant} for Scheduling an interview with the following details: 
-          Title: ${title}, Job Type: ${jobType}, Date: ${date}, Time Slot: ${timeSlot}, Participant: ${participant}, Meeting Id: ${meetingId}`);
-
-      // Confirm scheduling
-      await axios.post('/api/meetings', {
+      const variables = {
         title,
         jobType,
         date,
         timeSlot,
         participant,
         meetingId
-      });
+      };
 
+      await graphqlClient.request(CREATE_MEETING_MUTATION, variables);
+
+      await handleSendMessage(`The interview has been scheduled successfully! Thank you ${participant} for scheduling an interview with the following details:
+        Title: ${title}, Job Type: ${jobType}, Date: ${date}, Time Slot: ${timeSlot}, Participant: ${participant}, Meeting ID: ${meetingId}`);
+
+      // Confirm scheduling
       setMessages((prev) => [
         ...prev,
         'Bot: Your interview has been scheduled successfully!'
