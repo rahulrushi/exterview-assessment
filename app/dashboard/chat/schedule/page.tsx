@@ -1,9 +1,17 @@
 'use client';
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { GraphQLClient, gql } from 'graphql-request';
+import {
+  Box,
+  Typography,
+  Button,
+  Card,
+  CardContent,
+  Stack,
+  CircularProgress
+} from '@mui/joy';
 
 interface Meeting {
   id: string;
@@ -19,8 +27,8 @@ interface FetchMeetingsResponse {
   meetings: Meeting[];
 }
 
-const graphqlEndpoint = process.env.NEXTAUTH_URL || 'http://localhost:3000';
-
+const graphqlEndpoint =
+  process.env.NEXT_PUBLIC_NEXTAUTH_URL || 'http://localhost:3000';
 const graphqlClient = new GraphQLClient(`${graphqlEndpoint}/api/graphql`);
 
 const FETCH_MEETINGS_QUERY = gql`
@@ -56,11 +64,8 @@ const MeetingsPage: NextPage = () => {
           await graphqlClient.request<FetchMeetingsResponse>(
             FETCH_MEETINGS_QUERY
           );
-        console.log(data);
         if (data && data.meetings) {
           setMeetings(data.meetings);
-        } else {
-          console.warn('No meetings found in the response.');
         }
       } catch (error) {
         console.error('Error fetching meetings:', error);
@@ -74,18 +79,11 @@ const MeetingsPage: NextPage = () => {
 
   const handleDeleteMeeting = async (id: string) => {
     try {
-      console.log('Deleting meeting with ID:', id); // Log the ID
       setLoading(true);
-
-      // Log the GraphQL query and variables
-      console.log('Sending GraphQL mutation with ID:', { id });
-
-      const response = await graphqlClient.request<{
-        deleteMeeting: { id: string };
-      }>(DELETE_MEETING_MUTATION, { id });
-
-      console.log('Mutation response:', response);
-
+      await graphqlClient.request<{ deleteMeeting: { id: string } }>(
+        DELETE_MEETING_MUTATION,
+        { id }
+      );
       setMeetings((prevMeetings) =>
         prevMeetings.filter((meeting) => meeting.id !== id)
       );
@@ -97,53 +95,78 @@ const MeetingsPage: NextPage = () => {
   };
 
   return (
-    <div className="container p-6">
-      <div className="flex h-20 w-full items-center justify-between">
-        <h1 className="text-center text-3xl font-bold">Scheduled Meetings</h1>
-
+    <Box sx={{ p: 4 }}>
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="space-between"
+        mb={3}
+      >
+        <Typography level="h2" sx={{ fontWeight: 'bold' }}>
+          Scheduled Meetings
+        </Typography>
         <Link href="/dashboard/chatbot/chat">
-          <Button className="bg-blue-500 text-white">
+          <Button variant="solid" color="primary">
             Schedule a New Meeting
           </Button>
         </Link>
-      </div>
+      </Stack>
 
       {loading ? (
-        <p>Loading...</p>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '50vh'
+          }}
+        >
+          <CircularProgress />
+        </Box>
       ) : meetings.length === 0 ? (
-        <p>No meetings scheduled.</p>
+        <Typography level="body-lg" textAlign="center">
+          No meetings scheduled.
+        </Typography>
       ) : (
-        <div className="space-y-4">
+        <Stack spacing={2}>
           {meetings.map((meeting) => (
-            <div
-              key={meeting.id}
-              className="flex w-full items-center justify-between rounded-lg bg-white p-4 shadow-md"
-            >
-              <div>
-                <h2 className="text-xl font-semibold text-black">
-                  {meeting.title}
-                </h2>
-                <p className="text-black">{meeting.jobType}</p>
-                <p className="text-gray-900">
-                  {new Date(meeting.date).toLocaleDateString()} at{' '}
-                  {meeting.timeSlot}
-                </p>
-                <p className="text-gray-900">
-                  Participant: {meeting.participant}
-                </p>
-                <p className="text-gray-900">Room ID: {meeting.meetingId}</p>
-              </div>
-              <Button
-                onClick={() => handleDeleteMeeting(meeting.id)}
-                className="mt-4 bg-red-500 text-white"
-              >
-                Delete
-              </Button>
-            </div>
+            <Card key={meeting.id} variant="outlined" sx={{ boxShadow: 'lg' }}>
+              <CardContent>
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="flex-start"
+                >
+                  <Box>
+                    <Typography level="h4" fontWeight="bold" gutterBottom>
+                      {meeting.title}
+                    </Typography>
+                    <Typography level="body-md">{meeting.jobType}</Typography>
+                    <Typography level="body-md">
+                      {new Date(meeting.date).toLocaleDateString()} at{' '}
+                      {meeting.timeSlot}
+                    </Typography>
+                    <Typography level="body-md">
+                      Participant: {meeting.participant}
+                    </Typography>
+                    <Typography level="body-md">
+                      Room ID: {meeting.meetingId}
+                    </Typography>
+                  </Box>
+                  <Button
+                    variant="soft"
+                    color="danger"
+                    onClick={() => handleDeleteMeeting(meeting.id)}
+                  >
+                    Delete
+                  </Button>
+                </Stack>
+              </CardContent>
+            </Card>
           ))}
-        </div>
+        </Stack>
       )}
-    </div>
+    </Box>
   );
 };
 

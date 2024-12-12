@@ -9,7 +9,8 @@ import { authToken, createMeeting } from '@/actions/videosdk';
 import { Calendar } from '@/components/ui/calendar';
 import { GraphQLClient } from 'graphql-request';
 
-const graphqlEndpoint = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+const graphqlEndpoint =
+  process.env.NEXT_PUBLIC_NEXTAUTH_URL || 'http://localhost:3000';
 
 const graphqlClient = new GraphQLClient(`${graphqlEndpoint}/api/graphql`);
 

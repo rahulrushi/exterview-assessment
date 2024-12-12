@@ -5,6 +5,7 @@ import { useMeeting } from '@videosdk.live/react-sdk';
 import { Controls } from './Controls';
 import { ParticipantView } from './ParticipantView';
 import { Loader, Users } from 'lucide-react';
+import { Box, Button, CircularProgress, Grid, Typography } from '@mui/joy';
 
 type MeetingViewProps = {
   onMeetingLeave: () => void;
@@ -20,7 +21,7 @@ export function MeetingView({ onMeetingLeave, meetingId }: MeetingViewProps) {
     onMeetingLeft: () => {
       onMeetingLeave();
       setJoined(null); // Reset state when the meeting is left
-    },
+    }
   });
 
   useEffect(() => {
@@ -34,35 +35,57 @@ export function MeetingView({ onMeetingLeave, meetingId }: MeetingViewProps) {
   };
 
   return (
-    <div className="container mx-auto min-h-screen bg-gray-100 px-4 py-6">
-      <h3 className="mb-6 text-center text-2xl font-semibold text-indigo-600">
-        <Users className="inline mr-2" /> Meeting Id: {meetingId}
-      </h3>
+    <Box
+      className="container mx-auto"
+      minHeight="100vh"
+      bgcolor="neutral.100"
+      padding={4}
+    >
+      <Typography
+        level="h4"
+        textAlign="center"
+        fontWeight="bold"
+        color="primary"
+        marginBottom={3}
+      >
+        <Users className="mr-2 inline" /> Meeting Id: {meetingId}
+      </Typography>
 
       {joined === 'JOINED' ? (
-        <div>
-          <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <Box>
+          <Grid container spacing={2} marginTop={2}>
             {[...participants.keys()].map((participantId) => (
-              <ParticipantView participantId={participantId} key={participantId} />
+              <Grid xs={12} sm={6} lg={4} xl={3} key={participantId}>
+                <ParticipantView participantId={participantId} />
+              </Grid>
             ))}
-          </div>
+          </Grid>
           <Controls />
-        </div>
+        </Box>
       ) : joined === 'JOINING' ? (
-        <div className="flex justify-center items-center space-x-2">
-          <Loader className="animate-spin text-indigo-600" size={24} />
-          <p className="text-center text-lg">Joining the meeting...</p>
-        </div>
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          marginTop={6}
+        >
+          <CircularProgress color="primary" size="lg" />
+          <Typography marginLeft={2} level="body-lg">
+            Joining the meeting...
+          </Typography>
+        </Box>
       ) : (
-        <div className="mt-6 flex justify-center">
-          <button
+        <Box display="flex" justifyContent="center" marginTop={6}>
+          <Button
             onClick={joinMeeting}
-            className="rounded-lg bg-indigo-600 px-6 py-3 text-white shadow-lg transition hover:bg-indigo-700"
+            variant="solid"
+            color="primary"
+            size="lg"
           >
             Join Now
-          </button>
-        </div>
+          </Button>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 }

@@ -1,10 +1,18 @@
-"use client";
+/* eslint-disable @next/next/no-img-element */
+'use client';
 
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import axios from "axios";
-import { Loader } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import { Loader } from 'lucide-react';
+// import { Button } from '@/components/ui/button';
+import Image from 'next/image';
+import AspectRatio from '@mui/joy/AspectRatio';
+import Button from '@mui/joy/Button';
+import Card from '@mui/joy/Card';
+import CardContent from '@mui/joy/CardContent';
+import IconButton from '@mui/joy/IconButton';
+import Typography from '@mui/joy/Typography';
 
 export interface Project {
   id: string;
@@ -14,9 +22,9 @@ export interface Project {
 }
 
 const languageImages: { [key: string]: string } = {
-  javascript: "/js.png",
-  python: "/python.png",
-  typescript: "/typescript.png",
+  javascript: '/js.png',
+  python: '/python.png',
+  typescript: '/typescript.png'
 };
 
 export default function ProjectsView() {
@@ -28,11 +36,11 @@ export default function ProjectsView() {
   useEffect(() => {
     async function fetchProjects() {
       try {
-        const response = await axios.get("/api/codeProjects");
-        console.log(response.data)
+        const response = await axios.get('/api/codeProjects');
+        console.log(response.data);
         setProjects(response.data || []); // Fallback to an empty array if data is missing
       } catch (error) {
-        console.error("Failed to fetch projects:", error);
+        console.error('Failed to fetch projects:', error);
         setProjects([]); // Set to an empty array on error
       } finally {
         setLoading(false);
@@ -43,15 +51,15 @@ export default function ProjectsView() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader className="w-8 h-8 animate-spin text-gray-500" />
+      <div className="flex h-screen items-center justify-center">
+        <Loader className="h-8 w-8 animate-spin text-gray-500" />
       </div>
     );
   }
 
   if (!projects || projects.length === 0) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex h-screen items-center justify-center">
         <p className="text-gray-600">No projects found. Create a new one!</p>
       </div>
     );
@@ -59,20 +67,27 @@ export default function ProjectsView() {
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Projects</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <h1 className="mb-6 text-2xl font-bold">Projects</h1>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {projects.map((project) => (
           <div
             key={project.id}
-            className="border p-4 rounded-lg shadow cursor-pointer hover:bg-gray-100"
-            onClick={() => router.push(`/dashboard/compiler/projects/${project.id}`)}
+            className="cursor-pointer rounded-lg border p-4 shadow hover:bg-gray-100"
+            onClick={() =>
+              router.push(`/dashboard/compiler/projects/${project.id}`)
+            }
           >
-            <div className="flex items-center mb-4">
+            <div className="mb-4 flex items-center">
               {/* Language Icon */}
-              <img
-                src={languageImages[project.language.toLowerCase()] || "/images/languages/default.png"}
+              <Image
+                width={500}
+                height={500}
+                src={
+                  languageImages[project.language.toLowerCase()] ||
+                  '/images/languages/default.png'
+                }
                 alt={project.language}
-                className="w-10 h-10 rounded-full mr-4"
+                className="mr-4 h-10 w-10 rounded-full"
               />
               <div>
                 <h2 className="text-xl font-semibold">{project.title}</h2>

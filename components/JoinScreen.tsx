@@ -1,15 +1,16 @@
-"use client";
-import { useEffect, useState } from "react";
-import useMeetingStore from "@/lib/meetingStore";
+'use client';
+import { useEffect, useState } from 'react';
+import useMeetingStore from '@/lib/meetingStore';
+import { Box, Button, Input, Stack, Typography } from '@mui/joy';
 
 export function JoinScreen({
-  getMeetingAndToken,
+  getMeetingAndToken
 }: {
   getMeetingAndToken: (meeting?: string, name?: string) => void;
 }) {
   const { meetingId, participantName } = useMeetingStore();
   const [localMeetingId, setLocalMeetingId] = useState<string | undefined>();
-  const [name, setName] = useState<string>("");
+  const [name, setName] = useState<string>('');
 
   useEffect(() => {
     if (meetingId && participantName) {
@@ -24,42 +25,74 @@ export function JoinScreen({
   const isButtonDisabled = !name.trim();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-6">
-      <div className="w-full max-w-sm space-y-6">
-        <h2 className="text-3xl font-semibold text-center text-indigo-600">Join or Create Meeting</h2>
-        <div className="space-y-4">
-          <input
-            type="text"
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      minHeight="100vh"
+      bgcolor="neutral.100"
+      padding={4}
+    >
+      <Box
+        width="100%"
+        maxWidth="400px"
+        padding={3}
+        borderRadius="md"
+        boxShadow="sm"
+        bgcolor="background.surface"
+      >
+        <Typography
+          level="h4"
+          textAlign="center"
+          color="primary"
+          fontWeight="bold"
+          marginBottom={2}
+        >
+          Join or Create Meeting
+        </Typography>
+        <Stack spacing={2}>
+          <Input
             placeholder="Enter Your Name"
-            className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500"
-            onChange={(e) => setName(e.target.value)}
             value={name}
+            onChange={(e) => setName(e.target.value)}
+            fullWidth
+            size="lg"
           />
-          <input
-            type="text"
+          <Input
             placeholder="Enter Meeting Id"
-            className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500"
-            onChange={(e) => setLocalMeetingId(e.target.value)}
             value={localMeetingId}
+            onChange={(e) => setLocalMeetingId(e.target.value)}
+            fullWidth
+            size="lg"
           />
-        </div>
-        <div className="flex justify-between">
-          <button
+        </Stack>
+        <Stack
+          direction="row"
+          spacing={2}
+          marginTop={3}
+          justifyContent="center"
+        >
+          <Button
             onClick={onClick}
             disabled={isButtonDisabled}
-            className="w-48 p-3 bg-indigo-600 text-white rounded-lg disabled:bg-gray-400 transition"
+            variant="solid"
+            color="primary"
+            size="lg"
           >
             Join Meeting
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={onClick}
             disabled={isButtonDisabled}
-            className="w-48 p-3 bg-green-600 text-white rounded-lg disabled:bg-gray-400 transition"
+            variant="solid"
+            color="success"
+            size="lg"
           >
             Create Meeting
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </Stack>
+      </Box>
+    </Box>
   );
 }

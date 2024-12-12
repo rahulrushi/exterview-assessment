@@ -1,8 +1,16 @@
 'use client';
 import React, { useEffect, useMemo, useRef } from 'react';
-import { useParticipant } from '@videosdk.live/react-sdk';
+import { useParticipant, useMeeting } from '@videosdk.live/react-sdk';
 import ReactPlayer from 'react-player';
 import { Mic, Video, MicOff, VideoOff } from 'lucide-react';
+import {
+  Box,
+  Typography,
+  IconButton,
+  Grid,
+  Stack,
+  CircularProgress
+} from '@mui/joy';
 
 export function ParticipantView({ participantId }: { participantId: string }) {
   const micRef = useRef<HTMLAudioElement>(null);
@@ -24,10 +32,11 @@ export function ParticipantView({ participantId }: { participantId: string }) {
         const mediaStream = new MediaStream();
         mediaStream.addTrack(micStream.track);
         micRef.current.srcObject = mediaStream;
-
-        micRef.current.play().catch((error) =>
-          console.error('micRef.current.play() failed', error)
-        );
+        micRef.current
+          .play()
+          .catch((error) =>
+            console.error('micRef.current.play() failed', error)
+          );
       } else {
         micRef.current.srcObject = null;
       }
@@ -35,31 +44,54 @@ export function ParticipantView({ participantId }: { participantId: string }) {
   }, [micStream, micOn]);
 
   return (
-    <div className="flex flex-col items-center space-y-4 bg-white rounded-lg shadow-lg p-4">
-      <p className="text-xl font-medium text-gray-800">
-        {displayName}
-      </p>
-      <div className="flex space-x-2">
-        {/* Webcam Icon */}
-        <div className={`p-2 rounded-full ${webcamOn ? 'bg-green-100' : 'bg-gray-200'}`}>
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      gap={2}
+      bgcolor="background.surface"
+      padding={2}
+      borderRadius="md"
+      boxShadow="md"
+      width="100%"
+    >
+      <Typography
+        level="h4"
+        textAlign="center"
+        fontWeight="medium"
+        color="neutral"
+      >
+        {isLocal ? 'You' : displayName}
+      </Typography>
+
+      <Stack direction="row" spacing={1}>
+        <IconButton
+          color={webcamOn ? 'success' : 'neutral'}
+          variant="soft"
+          size="lg"
+        >
           {webcamOn ? (
-            <Video className={`text-gray-600 ${webcamOn ? 'text-green-500' : 'text-gray-400'}`} />
+            <Video className="text-green-500" />
           ) : (
             <VideoOff className="text-gray-400" />
           )}
-        </div>
-
-        {/* Mic Icon */}
-        <div className={`p-2 rounded-full ${micOn ? 'bg-green-100' : 'bg-gray-200'}`}>
+        </IconButton>
+        <IconButton
+          color={micOn ? 'success' : 'neutral'}
+          variant="soft"
+          size="lg"
+        >
           {micOn ? (
-            <Mic className={`text-gray-600 ${micOn ? 'text-green-500' : 'text-gray-400'}`} />
+            <Mic className="text-green-500" />
           ) : (
             <MicOff className="text-gray-400" />
           )}
-        </div>
-      </div>
+        </IconButton>
+      </Stack>
+
       <audio ref={micRef} autoPlay muted={isLocal} />
-      {webcamOn && videoStream && (
+
+      {webcamOn && videoStream ? (
         <ReactPlayer
           playsinline
           pip={false}
@@ -68,10 +100,12 @@ export function ParticipantView({ participantId }: { participantId: string }) {
           muted={true}
           playing={true}
           url={videoStream}
-          height={'200px'}
-          width={'300px'}
+          height="200px"
+          width="300px"
         />
+      ) : (
+        <CircularProgress color="neutral" size="lg" />
       )}
-    </div>
+    </Box>
   );
 }
